@@ -11,7 +11,7 @@
     "typescript": "*"
   },
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
+    "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0"
   }
 }
