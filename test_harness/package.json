@@ -1,0 +1,17 @@
+{
+  "devDependencies": {
+    "cypress": "^13.2.0",
+    "cypress-mochawesome-reporter": "^3.7.0",
+    "cypress-multi-reporters": "^1.6.3",
+    "junit-merge": "^2.0.0",
+    "mocha": "^10.2.0",
+    "mocha-junit-reporter": "^2.2.1",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0"
+  },
+  "scripts": {
+    "report:merge": "mochawesome-merge cypress/results/mochawesome/*.json -o cypress/mochawesome/report.json",
+    "report:generate": "marge cypress/mochawesome/report.json --charts true"
+  }
+}

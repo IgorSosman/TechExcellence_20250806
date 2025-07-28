@@ -1,0 +1,39 @@
+### retrieve JWT from X-RAY.
+# curl -H "Content-Type: application/json" -X POST --data @"cloud_auth.json" https://xray.cloud.getxray.app/api/v2/authenticate
+POST {{atlassian_host}}/
+    api/v2/authenticate
+Content-Type: application/json
+Accept: application/json
+
+{
+  "client_id": "{{clientId}}",
+  "client_secret": "{{clientSecret}}"
+}
+
+> {%
+    client.global.set("auth_token", response.body);
+%}
+
+
+### retrive test spec
+@issueNumber ="T2I-1"
+# curl -H "Content-Type: application/json" -X GET -H "Authorization: Bearer $token"  "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=DEMO-6;DEMO-7"
+
+GET https://xray.cloud.getxray.app/api/v2/export/cucumber?
+    keys={{issueNumber}}
+Authorization: Bearer {{auth_token}}
+// Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnQiOiJiMDI2ZjU3Ni00ODBiLTM4MTgtOGI4OC00NDFhZGFiOTBmYjAiLCJhY2NvdW50SWQiOiI3MTIwMjA6Y2RkOWU1MDQtZjI1YS00YWVkLThiNWItZDE1NmQ1NDVkYWQ0IiwiaXNYZWEiOmZhbHNlLCJpYXQiOjE3MDY4NzAyMzAsImV4cCI6MTcwNjk1NjYzMCwiYXVkIjoiRUIzNDczQkJCQzlBNEY3MDhGNEU1MjU3NzJGREExNUMiLCJpc3MiOiJjb20ueHBhbmRpdC5wbHVnaW5zLnhyYXkiLCJzdWIiOiJFQjM0NzNCQkJDOUE0RjcwOEY0RTUyNTc3MkZEQTE1QyJ9.pY6za4EXdGwAOpam7b-I56R3qA0tDy4h6dFM0NkTLzM
+Content-Type: application/json
+
+>> {{responseLocation}}/response.zip
+
+
+### submit results
+# curl -H "Content-Type: application/json" -X POST -H "Authorization: Bearer $token"  --data @"data.json" https://xray.cloud.getxray.app/api/v2/import/execution/cucumber
+POST https://xray.cloud.getxray.app/api/v2/import/execution/cucumber
+Authorization: Bearer {{auth_token}}
+//Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnQiOiJiMDI2ZjU3Ni00ODBiLTM4MTgtOGI4OC00NDFhZGFiOTBmYjAiLCJhY2NvdW50SWQiOiI3MTIwMjA6Y2RkOWU1MDQtZjI1YS00YWVkLThiNWItZDE1NmQ1NDVkYWQ0IiwiaXNYZWEiOmZhbHNlLCJpYXQiOjE3MDY4MDA3NDYsImV4cCI6MTcwNjg4NzE0NiwiYXVkIjoiRUIzNDczQkJCQzlBNEY3MDhGNEU1MjU3NzJGREExNUMiLCJpc3MiOiJjb20ueHBhbmRpdC5wbHVnaW5zLnhyYXkiLCJzdWIiOiJFQjM0NzNCQkJDOUE0RjcwOEY0RTUyNTc3MkZEQTE1QyJ9.zi9bnQomLUGrZYMehukX2JJwBmv9m8AUZRdkVNnnxdA
+Content-Type: application/json
+
+< results/test-results-for-x_ray.json
+
