@@ -21,15 +21,19 @@ tasks.register('setupFeature', Copy) {
 }
 
 tasks.register('cleanUp') {
-    delete fileTree('xrayapi/responses/response.zip') {
+    delete fileTree('xrayapi/responses') {
         include '**/*.zip'
     }
     delete fileTree('xrayapi/results') {
         include '**/*.json'
     }
 
-    delete fileTree('cypress/e2e/bzcore') {
+    delete fileTree('cypress/e2e/features') {
         include '**/*.feature'
+    }
+
+    delete fileTree('cypress/screenshots') {
+        include '**/*.png'
     }
 
 }

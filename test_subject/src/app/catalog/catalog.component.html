@@ -3,6 +3,7 @@
     <a
       class="button"
       id="button_{{filterValue}}"
+      [attr.data-cy]="filterValue"
       (click)="setFilter(filterValue)"
        *ngFor="let filterValue of filters">
       {{ filterValue }}

@@ -5,16 +5,15 @@ import createEsbuildPlugin from "@badeball/cypress-cucumber-preprocessor/esbuild
 
 
 export default defineConfig({
-    video: true,
+    retries: 1,
+    video: false,
     screenshotOnRunFailure: true,
     experimentalSourceRewriting: true,
     experimentalFetchPolyfill: true,
-    // chromeWebSecurity: true,
     e2e: {
-       // baseUrl: "http://localhost:4200/",
-       // specPattern: "cypress/e2e/**/*.{cy,spec}.{js,ts}",
+        viewportWidth: 1280,
+        viewportHeight:1280,
         specPattern: "**/*.feature",
-
         async setupNodeEvents(
             on: Cypress.PluginEvents,
             config: Cypress.PluginConfigOptions
@@ -33,6 +32,6 @@ export default defineConfig({
         experimentalSessionAndOrigin: true,
         projectId: "bfi83g",
         supportFile: false,
-        // setupNodeEvents
+
     },
 })

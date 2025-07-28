@@ -16,7 +16,7 @@ Accept: application/json
 
 
 ### retrive test spec
-@issueNumber ="T2I-3"
+@issueNumber ="T2I-9"
 # curl -H "Content-Type: application/json" -X GET -H "Authorization: Bearer $token"  "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=DEMO-6;DEMO-7"
 
 GET https://xray.cloud.getxray.app/api/v2/export/cucumber?
