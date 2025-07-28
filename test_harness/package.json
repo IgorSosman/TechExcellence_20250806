@@ -1,0 +1,17 @@
+{
+  "name": "E2E",
+  "version": "1.0.0",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "postcy:run": "echo \"Cypress tests done!\""
+  },
+  "devDependencies": {
+    "cypress": "*",
+    "typescript": "*"
+  },
+  "dependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0"
+  }
+}

@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group 'com.sosman'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
+
+tasks.register('setupFeature', Copy) {
+    def zipFile = file('xrayapi/responses/response.zip')
+    def outputDir = file("cypress/e2e/features")
+    from zipTree(zipFile)
+    into outputDir
+}
+
+tasks.register('cleanUp') {
+    delete fileTree('xrayapi/responses/response.zip') {
+        include '**/*.zip'
+    }
+    delete fileTree('xrayapi/results') {
+        include '**/*.json'
+    }
+
+    delete fileTree('cypress/e2e/bzcore') {
+        include '**/*.feature'
+    }
+
+}
