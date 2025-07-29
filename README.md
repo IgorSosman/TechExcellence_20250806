@@ -23,3 +23,28 @@
   - IntelliJ uses the main Editor font or system terminal config in some setups.
 
   - To ensure terminal uses your custom settings, adjust the Editor > Font too.
+
+## Set up Test Features
+
+1. Execute Gradle `CleanUp` task
+   ```shell
+    ./gradlew cleanUp
+   ```
+2. Acquire Xray authorization JWT using [Xray API](./test_harness/xrayapi/issue.http)
+3. Retrieve a ***feature*** file using [Xray API](./test_harness/xrayapi/issue.http)
+4. Execute Gradle `SetupFeature` task
+   ```shell
+    ./gradlew setupFeature
+   ```
+   
+## Publish Test Results
+
+1. Start the Test Subject Application
+   ```shell
+    ng serve
+   ```
+2. Run Cypress tests
+  ```shell
+    npx cypress run
+   ```
+3. Publish the  ***json result*** file using [Xray API](./test_harness/xrayapi/issue.http)
