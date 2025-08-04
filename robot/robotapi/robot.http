@@ -1,0 +1,4 @@
+### retrieve robot items
+
+GET {{robot_host}}/api/v1/shopitems/
+Accept: application/json

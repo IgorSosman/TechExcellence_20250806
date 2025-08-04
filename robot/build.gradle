@@ -1,0 +1,215 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+ext {
+    cucumberVersion = '7.14.0'
+}
+
+group = 'ch.sosman'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Cucumber
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+tasks.register('cucumber') { ->
+    {
+        dependsOn assemble, testClasses
+        doLast {
+            javaexec {
+                main = "io.cucumber.core.cli.Main"
+                classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+
+                /*jvmArgs = [
+                        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005"
+                ]*/
+
+                args = [
+                        '--plugin', 'pretty',
+                        '--plugin', 'html:xrayapi/results/cucumber-report.html',
+                        '--plugin', 'json:xrayapi/results/cucumber-report.json',
+                        '--plugin', 'junit:xrayapi/results/cucumber-report.xml',
+                        '--glue', 'ch.sosman.robot',
+                        'src/test/resources/features']
+            }
+        }
+    }
+}
+
+
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.register('createDddFolderStructure') {
+    doFirst {
+        def rootPackage = "ch.sosman.robot.domain"
+        var root = project.projectDir.getParent() + "/robot/src/main/java/ch/sosman/robot/domain/"
+        println('Running task for ' + root)
+        new File(root).mkdir()
+
+        root = root + useCaseName
+        new File(root).mkdir()
+
+        def application = root + '/application'
+        new File(application).mkdir()
+
+        def applicationModel = root + '/application/model'
+        new File(applicationModel).mkdir()
+
+        def core = root + '/core'
+        new File(core).mkdir()
+
+        def coreModel = root + '/core/model'
+        new File(coreModel).mkdir()
+        new File((root + '/core/ports')).mkdir()
+        new File((root + '/core/ports/incoming')).mkdir()
+        new File((root + '/core/ports/outgoing')).mkdir()
+
+        new File((root + '/infrastructure')).mkdir()
+
+        def infrastructureModel = root + '/infrastructure/model'
+        new File(infrastructureModel).mkdir()
+
+        println("Dirs have been created!")
+
+        /*Dto*/
+
+        def fileName = useCaseName.toLowerCase().capitalize()
+
+        new File(applicationModel, fileName + "Dto.java")
+                .write("package " + rootPackage + "." + useCaseName + ".application.model;"
+                        + "\n \n public class " + fileName + "Dto" + " {}")
+
+
+        def presenter = "Presenter"
+        new File(application, fileName + presenter + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".application;"
+                        + "\n \n  import org.springframework.stereotype.Component;"
+                        + "\n \n @Component \n public class " + fileName + presenter + " {}")
+
+
+        def controller = "Controller"
+        new File(application, fileName + controller + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".application;"
+                        + "\nimport org.springframework.stereotype.Controller;"
+                        + "\n \n@Controller \n public class " + fileName + controller + " {"
+                        + "\n \n private final " + fileName + presenter
+                        + " " + fileName.toLowerCase() + presenter.capitalize() + ";"
+                        + "\n \n public " + fileName + controller
+                        + "("
+                        + "final " + fileName + presenter + " " + fileName.toLowerCase() + presenter.capitalize()
+                        + ") {"
+                        + "\n this." + fileName.toLowerCase() + presenter.capitalize() + " = " + fileName.toLowerCase() + presenter.capitalize() + ";"
+                        + "\n }"
+                        + "\n }")
+
+
+        println("Application has been created!")
+
+
+        //*Domain Entity*//*
+        new File(coreModel, fileName + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".core.model;" +
+                        "\n\n public class " + fileName + " {\n" + "\n}")
+
+
+        //*Facade*//*
+        def facade = "Facade"
+        new File(root + '/core/ports/incoming', fileName + facade + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".core.ports.incoming;"
+                        + "\n \n public interface " + fileName + facade + " {\n" + "\n}")
+
+        //*Service*//*
+        def provider = "Provider"
+        new File(root + '/core', fileName + provider + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".core;"
+                        + "\nimport org.springframework.stereotype.Service;"
+                        + "\nimport " +
+                        rootPackage + "." + useCaseName +
+                        ".core.ports.incoming." + fileName + facade + ";"
+                        + "\n \n @Service \npublic class " + fileName + provider + " implements " + fileName + facade
+                        + "{\n" + "\n}")
+
+        //*Repository*//*
+        def repository = "Repository"
+        new File(core + '/ports/outgoing', fileName + repository + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".core.ports.outgoing;"
+                        + "\n \n public interface " + fileName + repository + " {\n" + "\n}")
+
+        println("Core has been created!")
+
+        /*DBEntity*/
+        def dbEntity = "DbEntity"
+        new File(infrastructureModel, fileName + dbEntity + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".infrastructure.model;" +
+                        "\n\n public class " + fileName + dbEntity + " {\n" + "\n}")
+
+        /*DBAdapter*/
+        def dbAdapter = "DbAdapter"
+        new File(root + '/infrastructure', fileName + dbAdapter + ".java")
+                .write("package " + rootPackage + "." + useCaseName + ".infrastructure;"
+                        + "\nimport org.springframework.stereotype.Repository;"
+                        + "\nimport " +
+                        rootPackage + "." + useCaseName +
+                        ".core.ports.outgoing." + fileName + repository + ";"
+                        + "\n \n @Repository \npublic class " + fileName + dbAdapter + " implements " + fileName + repository
+                        + "{\n" + "\n}")
+    }
+}
+
+
+tasks.register('setupFeature', Copy) {
+    def zipDir = file('xrayapi/responses')
+    def outputDir = file("src/test/resources/features")
+    from {
+        zipDir.listFiles().findAll { it.name.endsWith('.zip') }.collect { zipTree(it) }
+    }
+    into outputDir
+}
+
+tasks.register('cleanUp') {
+    delete fileTree('xrayapi/responses') {
+        include '**/*.zip'
+    }
+    delete fileTree('xrayapi/results') {
+        include '**/*.json'
+        include '**/*.html'
+        include '**/*.xml'
+    }
+
+    delete fileTree('src/test/resources/features') {
+        include '**/*.feature'
+    }
+}
