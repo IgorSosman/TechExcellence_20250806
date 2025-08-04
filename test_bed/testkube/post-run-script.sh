@@ -1,0 +1,2 @@
+
+curl -X POST --location "https://https://xray.cloud.getxray.app/api/v2/import/cucumber" -o features.zip -H "Authorization: Bearer ${JWT}" -H 'Accept: application/json' -d @xrayapi/results/test-results-for-x_ray.json"

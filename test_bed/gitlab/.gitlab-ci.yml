@@ -1,0 +1,18 @@
+stages:
+  - prepare
+  - test
+
+
+init-test-env:
+  stage: prepare
+
+  # gather necessary information
+  # parse Xray payload
+
+run-test:
+  stage: test
+
+  #prepare testkube payload
+
+  script:
+    - curl -X POST --location "https://test-kube-api" -H 'Accept: application/json' --data '${payload}'

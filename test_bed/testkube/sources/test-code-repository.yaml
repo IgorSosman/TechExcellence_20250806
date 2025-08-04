@@ -1,0 +1,9 @@
+apiVersion: tests.testkube.io/v3
+kind: Test
+metadata:
+  name: hello-world-test
+  namespace: testkube
+spec:
+  repository:
+    type: git
+    uri: https://github.com/IgorSosman/TechExcellence_20250806.git

@@ -1,0 +1,25 @@
+apiVersion: executor.testkube.io/v1
+kind: Webhook
+metadata:
+  name: trigger-robot-shop-tests
+  namespace: testkube
+spec:
+  uri: /testkube/hooks/robot-shop
+  events:
+    - test-trigger
+  selector:
+    matchLabels:
+      app: robot-shop
+  request:
+    method: POST
+    headers:
+      Content-Type: application/json
+    body: |
+      {
+        "test": "robot-shop-test",
+        "execution": {
+          "variables": {
+            "env": "staging"
+          }
+        }
+      }
