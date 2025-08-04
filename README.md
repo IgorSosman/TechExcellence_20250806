@@ -48,3 +48,9 @@
     npx cypress run
    ```
 3. Publish the  ***json result*** file using [Xray API](./test_harness/xrayapi/issue.http)
+
+## Jira XRay
+[XRay](https://arrasidols0p.atlassian.net/jira/software/c/projects/T2I/list)
+
+## TestKube
+[Testkube](https://app.testkube.io/organization/testkube-demo/environment/testkube-demo/dashboard/home)
